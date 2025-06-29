@@ -1,12 +1,15 @@
 version: '3.8'
 services:
-  cloud-manager:
-    build: .
+  frontend:
+    image: nextjs:latest
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
-      - ENCRYPTION_SECRET=${ENCRYPTION_SECRET}
-    restart: always
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+  backend:
+    image: node:18
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    command: "npm start"
