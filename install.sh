@@ -1,21 +1,22 @@
 #!/bin/bash
-set -e
-APP_DIR="/opt/cloud-manager"
-GIT_REPO="https://github.com/arthurwales/cloud-manager.git"
-PORT=3000
-echo "🛠️ Installing Docker and dependencies..."
-apt-get update -y
-apt-get install -y curl git docker.io docker-compose
-systemctl start docker
-systemctl enable docker
-echo "📦 Cloning project..."
-rm -rf "$APP_DIR"
-git clone "$GIT_REPO" "$APP_DIR"
-cd "$APP_DIR"
-echo "📄 Copy .env file (customize manually after setup)"
-cp .env.example .env
-echo "🚀 Building and starting app..."
-docker-compose up -d
-echo ""
-echo "✅ Installed! Open in your browser:"
-echo "👉 http://$(curl -s ifconfig.me):$PORT"
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+echo -e "${GREEN}>>> Updating system${NC}"
+sudo apt update
+sudo apt upgrade -y
+
+echo -e "${GREEN}>>> Installing Docker${NC}"
+sudo apt install -y docker.io docker-compose
+
+echo -e "${GREEN}>>> Downloading Cloud Manager${NC}"
+git clone https://github.com/arthurwales/cloud-manager.git
+cd cloud-manager
+
+echo -e "${GREEN}>>> Starting Application${NC}"
+sudo docker-compose up -d
+
+echo -e "${GREEN}✔✔✔ Setup Complete! ✔✔✔${NC}"
+echo -e "Access your dashboard at:"
+echo -e "${RED}http://$(curl -4s ifconfig.co):3000${NC}"
