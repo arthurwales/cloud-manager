@@ -1,25 +1,20 @@
-version: '3.8'
-services:
-  frontend:
-    image: node:20-bullseye
-    working_dir: /app
-    ports:
-      - "3000:3000"
-    command: >
-      sh -c "git clone https://github.com/arthurwales/cloud-manager.git /app &&
-      npm install &&
-      npm run build &&
-      npm start"
-    environment:
-      - NEXT_PUBLIC_BACKEND_URL=http://backend:3001
+#!/bin/bash
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
 
-  backend:
-    image: node:20-bullseye
-    working_dir: /app
-    ports:
-      - "3001:3001"
-    command: >
-      sh -c "git clone https://github.com/arthurwales/cloud-manager.git /app &&
-      cd backend &&
-      npm install &&
-      node server.js"
+echo -e "${GREEN}>>> Updating system${NC}"
+sudo apt update
+sudo apt upgrade -y
+
+echo -e "${GREEN}>>> Installing Docker${NC}"
+sudo apt install -y docker.io
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+echo -e "${GREEN}>>> Starting Application${NC}"
+sudo docker-compose up -d
+
+echo -e "${GREEN}✔✔✔ Setup Complete! ✔✔✔${NC}"
+echo -e "Access your dashboard at:"
+echo -e "${RED}http://$(curl -4s ifconfig.co):3000${NC}"
